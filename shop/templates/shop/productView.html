@@ -1,0 +1,46 @@
+{% extends 'shop/basic.html' %}
+
+
+{% block title %}{{pro.product_name}}{% endblock %}
+{% block css %}
+    .de{
+        margin-top : 50px;
+    }
+{% endblock %}
+{% block body %} 
+{% if pro %}
+<div class="container my-4">
+        <div class="row">
+    <div class = "col-md-4">
+    <div class="row">
+            
+     <img src = "../../media/{{pro.img}}" width="273px" height="385px">
+    </div>
+    </div>
+    
+    <div class="col-md-8 de">
+           
+            <h2>{{pro.product_name}}</h2>
+            <p><b>Rs. {{pro.price}}</b></p>
+            <p>{{pro.product_desc}}</p>
+        
+            <button href="" id = "qv
+            {{pro.id}}" class="btn btn-primary cart">Add To Cart</button>
+            <a href ="/shop/checkOut/{{pro.id}}"><button href="#" id = "qv{{pro.id}}" class="btn btn-primary cart">Buy Now</button></a>
+    </div>
+        </div>
+</div>
+{% else %}
+
+<h1>Please select a product First</h1>
+
+{% endif %}
+
+
+
+
+
+
+{% endblock %}
+
+

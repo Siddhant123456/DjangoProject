@@ -1,0 +1,113 @@
+{% extends 'shop/basic.html' %}
+
+
+{% block title %}Check Out{% endblock %}
+
+
+{% block body%}
+<div class="container">
+    
+    <div class="col my-4">
+            <h2>Step-1 ----> Review Your Cart Items..</h2>
+<ul class="list-group" id = "items">
+        
+      </ul>
+      </div>
+      <div class="col my-4">
+          <h2>Step-2 ----> Enter Your Details</h2>
+          <form action = "/shop/checkOut" method = "POST">
+            {% csrf_token %}
+                <div class="form-row">
+                <div class="form-group col-md-6">
+                    <input type = "hidden" class="form-control" id = "item_json" name = "item_json"> 
+                    <input type = "hidden" class="form-control" id = "amount"  name = "amount">
+                    <label for="inputName">Your Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Name" name = "name" required = "required">
+                </div>
+                
+                
+                  <div class="form-group col-md-6">
+                    <label for="inputEmail">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Email" name = "email"  required = "required">
+                  </div>
+                </div>
+                 
+                <div class="form-group">
+                  <label for="inputAddress">Address</label>
+                  <input type="text" class="form-control" id="Address1" placeholder="1234 Main St" name = "address1"  required = "required">
+                </div>
+                <div class="form-group">
+                  <label for="inputAddress2">Address Line 2</label>
+                  <input type="text" class="form-control" id="Address2" placeholder="Apartment, studio, or floor" name = "address2"  required = "required">
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputCity">City</label>
+                    <input type="text" class="form-control" id="city" placeholder="City" name = "city"  required = "required">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="inputState">State</label>
+                    <input type="text" class="form-control" id="state" placeholder="State" name = "state"  required = "required">
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="inputZip">Zip</label>
+                    <input type="text" class="form-control" id="zip_code" placeholder="zip_code" name = "zip_code"  required = "required">
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPhone">Phone Number</label>
+                    <input type="tel" class="form-control" id="number" placeholder="number" name = "number"  required = "required">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Place Order</button>
+              </form>
+      </div>
+
+      </div>
+
+{%endblock%}
+
+{% block js %}
+      <script>
+        
+        if(localStorage.getItem('cart') == null){
+            var cart = {};  
+             
+        }
+        else{
+                cart = JSON.parse(localStorage.getItem('cart'));
+                document.getElementById('cart').innerHTML = localStorage.getItem('sum');
+        }
+        let name,qty,cost;
+        let total_price = 0;
+        for(item in cart){
+           name  = cart[item][1];
+           qty = cart[item][0];
+           cost = cart[item][2];
+           total_price = total_price + cost;
+           mystr = `<li class = "list-group-item d-flex justify-content-between align-items-center">
+               ${name}
+               <span class = "badge badge-primary badge-pill">Price :  ${cost}</span>
+               <span class = "badge badge-primary badge-pill">Quantity :  ${qty}</span>
+           </li>`
+        
+        $('#items').append(mystr);
+        }
+        tot = `<li class = "list-group-item d-flex justify-content-between align-items-center">
+          <b>Total Price</b>:
+          <span class = "badge badge-success badge-pill">Price :  ${total_price}</span>
+          </li>`
+        $('#amount').val(total_price);
+        $('#items').append(tot);
+
+        $('#item_json').val(JSON.stringify(cart));
+        {% if thank %}
+        alert("Thank you!! Your Order Has been Placed. Your Order Id is {{id}}");
+        localStorage.clear();
+        document.getElementById('cart').innerHTML = 0;
+        window.location = '/shop';
+        {% endif %}
+        
+         
+      </script>
+{% endblock %}

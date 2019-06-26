@@ -1,0 +1,18 @@
+{% extends 'shop/basic.html' %}
+
+
+{% block title %}Check Out{% endblock %}
+
+
+{% block body%}
+    <h1>Payment status regarding your order id {{response.ORDERID}} </h1>
+
+    {% if response.RESPCODE == '01' %}
+        ORDER SUCCESS
+
+    {% else %}
+        ORDER FAILURE
+    {% endif %}
+
+
+{% endblock %}
