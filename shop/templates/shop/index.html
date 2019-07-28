@@ -59,7 +59,15 @@ body .carousel-indicators{
 {% endblock %}
 
 {% block body %}
+
 <div class="container">
+  {% if messages%}
+    <div class="alert alert-primary" role="alert">
+        {% for i in messages%}
+            {{i}}
+        {% endfor %}
+      </div>
+  {% endif %}
 
   {% for prods,no_of_slides,range in allprods%}
 
@@ -103,12 +111,12 @@ body .carousel-indicators{
                 
                 </div>
               
-        <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide = "prev">
+        <!-- <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide = "prev">
           <span class="carousel-control-prev-icon"></span>
         </a>
         <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide = "next">
             <span class="carousel-control-next-icon"></span>
-          </a>
+          </a> -->
         </div>
 {% endfor %}
 </div>
@@ -119,16 +127,14 @@ body .carousel-indicators{
 
 {% block js %}
 <script>
+  
   function update(cart,sum){
 
     localStorage.setItem('cart', JSON.stringify(cart));
     document.getElementById('cart').innerHTML = localStorage.getItem('sum');
   }
-  console.log('working');
   if(localStorage.getItem('cart') == null){
-    console.log("Empty");
     var cart = {};  
-    updatePopover(cart);
   }
   else
   {

@@ -19,7 +19,7 @@
                 
                   <div class="form-group col-md-6">
                     <label for="inputEmail">Enter Your Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Email" name = "email"  required = "required">
+                    <input type="email" class="form-control" id="email" placeholder="Email" name = "email1"  required = "required">
                   </div>
                 </div>
                 <button class="btn btn-success">Track Order</button>
@@ -50,10 +50,10 @@
             $('#citems').empty();
             formdata = {
                 'order_id' : $('input[name = order_id]').val(),
-                'email' : $('input[name = email]').val(),
+                'email' : $('input[name = email1]').val(),
                 'csrfmiddlewaretoken' : $('input[name = csrfmiddlewaretoken]').val(),
             }
-            
+            console.log(formdata.email);
         $.ajax({
             type : 'POST',
             url : '/shop/tracker',

@@ -1,5 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from django.contrib import messages
+from django.contrib.auth.models import User,auth
 from shop.models import Product,CarouselImages,Contact,Order,OrderUpdate
 from django.contrib import messages
 import json
@@ -9,18 +11,15 @@ from .paytm import Checksum
 import math
 
 def index(request):
-   
-    
     allprods = []
     catprod = Product.objects.values('category', 'id')
-    # print(catprod)
     cats = {item['category'] for item in catprod}
-    # print(cats)
     for cat in cats:
         prod = Product.objects.filter(category = cat)
         nos = len(prod)
         no_of_slides = ((nos // 4) + math.ceil((nos/4) - (nos//4)))
         allprods.append([prod,no_of_slides,range(1,no_of_slides)])
+        
         
     
     params = {"allprods" : allprods}
@@ -44,8 +43,7 @@ def about(request):
 def tracker(request):
     if request.method == 'POST':
         order_id = request.POST.get('order_id' , '')
-        email = request.POST.get('email', '')
-        
+        email = request.POST.get('email', '') 
         try:
             res =  Order.objects.filter(order_id = order_id , email = email)
             if len(res) > 0:
@@ -127,7 +125,45 @@ def check(request):
         return render(request,'shop/paytm.html' , {"param_dict" : param_dict})
         # return render(request,'shop/checkOut.html' , {"thank" : thank, "id" : or_id })
     return render(request,'shop/checkOut.html')
+def signup(request):
+    try:
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+        if User.objects.filter(email = email).exists():
+            messages.info(request,'Email Already Exists!!!')
+        else:
+            newuser = User.objects.create_user(first_name = first_name , last_name = last_name , email = email , username = username , password = password1)
+            newuser.save()
+            messages.info(request,'User Created Successfully :)')
+    except Exception:
+        messages.info(request,'UserName Already Exist!!!')
+    return redirect('/shop')
 
+
+
+
+
+
+
+def login(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+    user = auth.authenticate(username = username,password = password)
+    if user is not None:
+        auth.login(request,user)
+        messages.info(request,'User Login Successfully')       
+    else:
+        messages.info(request, 'Username Does not exist!!')
+    return redirect('/shop')        
+
+def logout(request):
+    auth.logout(request)
+    messages.info(request,'User Logged Out Successfully')
+    return redirect('/shop')
 @csrf_exempt
 def handlerequest(request):
     form = request.POST
@@ -144,4 +180,5 @@ def handlerequest(request):
             print("Payment Failed because " + response_dict["RESPMSG"])
         
     return render(request, 'shop/paymentstatus.html',{'response' : response_dict})
-    
+
+
